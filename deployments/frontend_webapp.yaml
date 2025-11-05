@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+#descriptions arounf the deployment
+metadata:
+  name: frontend-webapp
+spec:
+  selector:
+    matchLabels:
+      #should be used to identify the pod the deployment manages
+      app: frontend-webapp
+  # deployment order replicaset controller to keep 3 instances of these pods always running
+  replicas: 3
+  # pod definition section
+  template:
+    # metadata around the pod
+    metadata:
+      labels:
+        app: frontend-webapp
+        # optional (nice to have)
+        editor: vscode
+    spec:
+      # Where will I tolerate my pods to run 
+      # These do not restrict the pod from running on nodes that do not have the provided taint
+      tolerations:
+      - key: workload
+        operator: 'Equal'
+        value: 'frontend'
+        effect: 'NoExecute'
+      # Where will my pods will run, and in what node label
+      # We should add a toleration because the user nodes are tainted and will be not schedule the pods if the taint is not provided
+      nodeSelector:
+        kubernetes.azure.com/mode: user
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: frontend-webapp
+            topologyKey: kubernetes.io/hostname
+
+      containers:
+      # can be multiple containers since one pod scan contain multiple containers
+      - name: frontend-webapp
+        # test image from docker registry, provided by nginx project
+        image: nginxdemos/hello
+        resources:
+          requests:
+            # node should have 128 megabytes available for pod to run into it
+            # metrics are constantly sent from kubelet into metrics api (api server)
+            # which updates etcd, 
+            # kubernetes scheduler would then read the metrics and decide in which node the pod will be ran
+            memory: "64Mi"
+            # quarter of a CPU core is supposed to be allocated to this pod
+            # this is used by kubernetes's scheduler for determining wether the pod can run into the node
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            #1 core maimum allocated to each pod
+            cpu: "1"

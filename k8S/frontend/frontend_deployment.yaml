@@ -62,7 +62,7 @@ spec:
       # can be multiple containers since one pod scan contain multiple containers
       - name: frontend-webapp
         # test image from docker registry, provided by nginx project
-        image: acrdev9atwih.azurecr.io/weatherforecast-frontend:v2.0.0
+        image: acrdev9atwih.azurecr.io/weatherforecast-frontend:v2.1.0
         ports:
         - containerPort: 80
         imagePullPolicy: Always # Always pull latest version

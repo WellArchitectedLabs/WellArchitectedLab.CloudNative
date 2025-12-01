@@ -57,7 +57,6 @@ Application source code:
 Since this repo is only for demo purposes, and due to azure budget optimization, we have not configured private endpoint access from AKS cluster to the Azure Container Registry, which require Premium tier for private endpoints integration.
 For the AKS cluster to access the docker image, we have allowed public access to the ACR registry (again, this is not the recommanded best practise), which direct ACR attachment to the AKS cluster using the az aks --attach-acr command option.
 Following is a sample command:
-
     ```bash
     az aks update -n aks-dev-001 -g rg-kubernetes-dev-001 --attach-acr <acr-name-or-resource-id>
     ```

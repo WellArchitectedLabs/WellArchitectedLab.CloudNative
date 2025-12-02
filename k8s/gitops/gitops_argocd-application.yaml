@@ -9,9 +9,7 @@ spec:
     repoURL: https://github.com/medbalighhamdi/Trainings.Kubernetes.git
     targetRevision: main
     path: k8s/overlays/dev
-    directory:
-      recurse: true
-  destination: 
+  destination:
     server: https://kubernetes.default.svc
     namespace: default
   syncPolicy:

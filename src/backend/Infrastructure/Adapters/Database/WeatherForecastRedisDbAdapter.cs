@@ -7,6 +7,9 @@ using WeatherForecast.Infrastructure.Adapters.Database.Models;
 
 namespace WeatherForecast.Infrastructure.Adapters.Database;
 
+/// <summary>
+/// Redis implmentation of the weather forecast db adapter
+/// </summary>
 public class WeatherForecastRedisDbAdapter : IWeatherForecastDbAdapter
 {
     private const int BatchSize = 1000;
@@ -35,7 +38,7 @@ public class WeatherForecastRedisDbAdapter : IWeatherForecastDbAdapter
     /// <returns>All stored redis key values</returns>
     public async Task<IEnumerable<Domain.AggregateModel.WeatherAggregate.WeatherForecast>> GetAll(CancellationToken cancellationToken)
     {
-        var redisKeys = (RedisKey[])_redisConnector.ReadServer.Keys(pattern: "*");
+        var redisKeys = _redisConnector.ReadServer.Keys(pattern: "*");
 
         // use stack exchange batch method for extreme optimization
         var batch = _redisConnector.ReadDb.CreateBatch();
@@ -55,7 +58,8 @@ public class WeatherForecastRedisDbAdapter : IWeatherForecastDbAdapter
             ToDbObject().
             // and then maps the db object to a domain object
             // and passing the city (which is the redis key) as parameter
-            ToDomainObject(RedisKeyUtils.ResolveWeatherForecastCity(kv.Key)));
+            ToDomainObject(RedisKeyUtils.ResolveWeatherForecastCity(kv.Key)))
+            .ToList();
     }
 
     #endregion

@@ -9,6 +9,6 @@ public class WeatherForecastConfig
 
 public class RedisConfig
 {
-    public string? RedisReadDbAddress { get; set; }
-    public string? RedisWriteDbAddress { get; set; }
+    public string? RedisReadDbConnection { get; set; }
+    public string? RedisWriteDbConnection { get; set; }
 }

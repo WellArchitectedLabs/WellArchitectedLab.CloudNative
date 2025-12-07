@@ -18,6 +18,8 @@ builder.Services.AddCors(options =>
     .AllowAnyHeader());
 });
 
+builder.Services.RegisterLayers();
+
 var app = builder.Build();
 
 app.UseSwaggerSwashbuckle();

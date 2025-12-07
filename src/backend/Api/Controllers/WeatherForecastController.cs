@@ -1,33 +1,32 @@
 using Microsoft.AspNetCore.Mvc;
+using WeatherForecast.Api.Dtos.WeatherForecast.Get;
+using WeatherForecast.Api.Extensions;
+using WeatherForecast.Application.Services.Interfaces;
+using WeatherForecast.Domain.Ports.Adapters.Database;
 
-namespace VotingApp.Api.Controllers
+namespace WeatherForecast.Api.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class WeatherForecastController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    private readonly IWeatherForecastService _weatherForecastService;
+
+    /// <summary>
+    /// Initializer
+    /// </summary>
+    /// <param name="weatherForecastService"></param>
+    public WeatherForecastController(IWeatherForecastService weatherForecastService)
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        _weatherForecastService = weatherForecastService;
+    }
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
+    [HttpGet(Name = "GetAll")]
+    public async Task<ActionResult> GetAll(CancellationToken cancellationToken)
+    {
+        var allForecasts = await _weatherForecastService.GetAll(cancellationToken);
+        if(allForecasts.Any())
+            return NoContent();
+        return Ok(allForecasts.Select(f => f.MapToGetDto()));
     }
 }

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-configmap
+data:
+  appSettings.json: |
+    # json fieldPath:
+    "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "AllowedHosts": "*"
+    {
+      "Redis":
+      {
+        "Write": "redis-primary.default.svc.cluster.local:6379"
+        "Read": "redis-secondary.default.svc.cluster.local:6379"
+      } 
+    }

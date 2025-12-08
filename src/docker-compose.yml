@@ -34,7 +34,7 @@ services:
       - weather-forecast-api
     environment:
       # Point frontend to backend container
-      BACKEND_URL: "http://weather-forecast-api:5000"
+      BACKEND_URL: "http://localhost:5000"
     container_name: weather-forecast-frontend
     ports:
       - "8080:80"

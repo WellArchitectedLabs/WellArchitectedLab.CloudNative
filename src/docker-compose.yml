@@ -5,7 +5,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./data:/data
+      - ./data/redis-dump.rdb:/data/dump.rdb
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -19,8 +19,8 @@ services:
     depends_on:
       - redis
     environment:
-      WeatherForecast__Redis__ReadDbConnection: "redis:6379,abortConnect=false,connectRetry=10"
-      WeatherForecast__Redis__WriteDbConnection: "redis:6379,abortConnect=false,connectRetry=10"
+      WeatherForecast__Redis__ReadDbConnection: "redis:6379,abortConnect=false,connectTimeout=10000,syncTimeout=10000"
+      WeatherForecast__Redis__WriteDbConnection: "redis:6379,abortConnect=false,connectTimeout=10000,syncTimeout=10000"
       ASPNETCORE_ENVIRONMENT: "Development"
     ports:
       - "5000:80"

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using WeatherForecast.Api.Domain.Ports;
 using WeatherForecast.Application;
 using WeatherForecast.Application.Services.Interfaces;

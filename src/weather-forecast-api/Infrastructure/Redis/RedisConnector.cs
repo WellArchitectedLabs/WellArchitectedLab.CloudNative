@@ -7,38 +7,32 @@ namespace WeatherForecast.Infrastructure.Redis;
 
 public class RedisConnector : IRedisConnector
 {
-    #region Properties
+    private readonly Lazy<ConnectionMultiplexer> _readConnection;
+    private readonly Lazy<ConnectionMultiplexer> _writeConnection;
 
-    public IDatabase WriteDb { get; init; }
-    public IDatabase ReadDb { get; init; }
-    public IServer ReadServer { get; init; }
-    public IServer WriteServer { get; init; }
+    public IDatabase ReadDb => _readConnection.Value.GetDatabase();
+    public IDatabase WriteDb => _writeConnection.Value.GetDatabase();
 
-    #endregion
+    public IServer ReadServer => _readConnection.Value.GetServer(
+        _readConnection.Value.GetEndPoints().First());
+
+    public IServer WriteServer => _writeConnection.Value.GetServer(
+        _writeConnection.Value.GetEndPoints().First());
 
     public RedisConnector(IOptionsMonitor<WeatherForecastConfig> configuration)
     {
-        var readDbConnectionString = configuration.CurrentValue.Redis?.ReadDbConnection;
-        var writeConnectionString = configuration.CurrentValue.Redis?.WriteDbConnection;
+        var readConn = configuration.CurrentValue.Redis?.ReadDbConnection;
+        var writeConn = configuration.CurrentValue.Redis?.WriteDbConnection;
 
-        if (string.IsNullOrWhiteSpace(readDbConnectionString) || string.IsNullOrWhiteSpace(writeConnectionString))
-            throw new ArgumentNullException($@"Please provide valid values for both configurations: 
-                                                {nameof(RedisConfig.ReadDbConnection)} 
-                                                and {nameof(RedisConfig.WriteDbConnection)}");
+        if (string.IsNullOrWhiteSpace(readConn) || string.IsNullOrWhiteSpace(writeConn))
+            throw new ArgumentNullException($@" Please provide valid Redis configuration:
+                            - {nameof(RedisConfig.ReadDbConnection)}
+                            - {nameof(RedisConfig.WriteDbConnection)}");
 
-        (ReadDb, ReadServer) = GetRedisCredentials(writeConnectionString);
-        (WriteDb, WriteServer) = GetRedisCredentials(readDbConnectionString);
+        _readConnection = new Lazy<ConnectionMultiplexer>(() =>
+            ConnectionMultiplexer.Connect(readConn));
 
-    }
-
-    /// <summary>
-    /// Creates a redis connection from the given connection string
-    /// </summary>
-    /// <param name="redisWriteConnectionString">redis server connection string</param>
-    /// <returns></returns>
-    private (IDatabase, IServer) GetRedisCredentials(string redisWriteConnectionString)
-    {
-        var writeDbConnection = ConnectionMultiplexer.Connect(redisWriteConnectionString);
-        return (writeDbConnection.GetDatabase(), writeDbConnection.GetServer(writeDbConnection.GetEndPoints().First()));
+        _writeConnection = new Lazy<ConnectionMultiplexer>(() =>
+            ConnectionMultiplexer.Connect(writeConn));
     }
 }

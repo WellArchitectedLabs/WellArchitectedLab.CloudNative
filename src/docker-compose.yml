@@ -1,0 +1,35 @@
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis-dump.rdb:/data/dump.rdb
+  backend:
+    build:
+      context: ./backend
+      dockerfile: DockerFile
+    container_name: backend
+    depends_on:
+      - redis
+    environment:
+      WEATHERFORECAST__REDIS__READDBCONNECTION: "redis:6379,abortConnect=false"
+      WEATHERFORECAST__REDIS__WRITEDBCONNECTION: "redis:6379,abortConnect=false"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5000:80"
+    restart: always
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: DockerFile
+    depends_on:
+      - backend
+    environment:
+      # Point frontend to backend container
+      BACKEND_URL: "http://backend:80"
+    container_name: frontend
+    ports:
+      - "8080:8080"
+    restart: always

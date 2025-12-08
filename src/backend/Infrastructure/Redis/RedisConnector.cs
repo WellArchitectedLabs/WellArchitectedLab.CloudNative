@@ -18,16 +18,16 @@ public class RedisConnector : IRedisConnector
 
     public RedisConnector(IOptionsMonitor<WeatherForecastConfig> configuration)
     {
-        var redisReadDbConnectionString = configuration.CurrentValue.Redis?.RedisReadDbConnection;
-        var redisWriteConnectionString = configuration.CurrentValue.Redis?.RedisWriteDbConnection;
+        var readDbConnectionString = configuration.CurrentValue.Redis?.ReadDbConnection;
+        var writeConnectionString = configuration.CurrentValue.Redis?.WriteDbConnection;
 
-        if (string.IsNullOrWhiteSpace(redisReadDbConnectionString) || string.IsNullOrWhiteSpace(redisWriteConnectionString))
+        if (string.IsNullOrWhiteSpace(readDbConnectionString) || string.IsNullOrWhiteSpace(writeConnectionString))
             throw new ArgumentNullException($@"Please provide valid values for both configurations: 
-                                                {nameof(RedisConfig.RedisReadDbConnection)} 
-                                                and {nameof(RedisConfig.RedisWriteDbConnection)}");
+                                                {nameof(RedisConfig.ReadDbConnection)} 
+                                                and {nameof(RedisConfig.WriteDbConnection)}");
 
-        (ReadDb, ReadServer) = GetRedisCredentials(redisWriteConnectionString);
-        (WriteDb, WriteServer) = GetRedisCredentials(redisReadDbConnectionString);
+        (ReadDb, ReadServer) = GetRedisCredentials(writeConnectionString);
+        (WriteDb, WriteServer) = GetRedisCredentials(readDbConnectionString);
 
     }
 

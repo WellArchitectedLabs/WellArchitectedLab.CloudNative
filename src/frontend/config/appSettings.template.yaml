@@ -1,0 +1,2 @@
+# Templatized config file - used by docker compose
+backend_url: "${BACKEND_URL}"

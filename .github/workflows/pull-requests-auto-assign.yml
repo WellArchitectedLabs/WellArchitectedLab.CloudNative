@@ -69,7 +69,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
-              team_reviewers: ["devops-team"]
+              team_reviewers: ["medbalighhamdi"]
             });
             
             console.log("✅ Team assignment completed successfully.");

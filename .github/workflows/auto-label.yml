@@ -7,8 +7,10 @@ on:
 jobs:
   label:
     runs-on: ubuntu-latest
+    permissions:
+        issues: write
     steps:
-      - name: Add labels based on branch name
+      - name: Add labels
         uses: actions/github-script@v7
         with:
           script: |
@@ -58,7 +60,8 @@ jobs:
 
             const isDevOpsTouched = files.some(file =>
               file.filename.startsWith("k8s") ||
-              file.filename.startsWith("iac")
+              file.filename.startsWith("iac") ||
+              file.filename.startsWith(".github")
             );
 
             if (!isDevOpsTouched) {

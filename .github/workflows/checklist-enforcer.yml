@@ -5,7 +5,7 @@ on:
     types: [opened, edited, synchronize]
 
 jobs:
-  enforce:
+  Enforce-PRChecklist:
     runs-on: ubuntu-latest
     steps:
       - name: Enforce PR Checklist

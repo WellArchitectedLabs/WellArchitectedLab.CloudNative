@@ -4,6 +4,8 @@ branches:
   main:
     regex: ^main$
     increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
   develop:
     regex: ^develop$
     increment: Minor
@@ -13,3 +15,6 @@ branches:
 
 ignore:
   sha: []
+  
+commit-message-incrementing: Disabled
+major-version: 1

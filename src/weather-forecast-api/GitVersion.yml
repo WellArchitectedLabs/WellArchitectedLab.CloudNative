@@ -13,3 +13,5 @@ branches:
 
 ignore:
   sha: []
+
+major-version: 1

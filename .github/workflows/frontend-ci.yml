@@ -1,11 +1,13 @@
 name: Build & Push Weather Forecast Frontend
+
 on:
     push:
+        branches: [ "main" ]
         paths:
-          - "src/weather-forecast-frontend/**"
+          - src/weather-forecast-frontend/**
     pull_request:
         paths:
-          - "src/weather-forecast-frontend/**"
+          - src/weather-forecast-frontend/**
     workflow_dispatch:
 
 jobs:

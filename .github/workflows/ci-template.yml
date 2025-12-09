@@ -2,6 +2,9 @@ name: (Template) Docker buld and push
 on:
     workflow_call:
         inputs:
+            push_to_registry:
+              default: true
+              type: boolean
             service_name:
                 required: true
                 type: string
@@ -18,8 +21,7 @@ on:
             required: true
           ACR_PASSWORD:
             required: true
-
-
+            
 jobs:
     Versionning:
         runs-on: ubuntu-latest
@@ -49,28 +51,36 @@ jobs:
              id: sha
              run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-
     BuildAndPushImage:
-        needs: Versionning
+        needs: [Versionning]
         name: Build & Push service
         runs-on: ubuntu-latest
-        
         steps:
             - name: Checkout
               uses: actions/checkout@v4
               with:
-                fetch-depth: 0   # REQUIRED for GitVersion
+                fetch-depth: 0   # REQUIRED for GitVersion. Disables shallow clone
             
+            - name: Set image name
+              run: |
+                VERSION_TAG="${{ needs.versionning.outputs.version }}-${{ needs.versionning.outputs.sha }}"
+                IMAGE="${{ secrets.ACR_LOGIN_SERVER }}/${{ inputs.service_name }}:$VERSION_TAG"
+                echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+            
+            # Only push to registry when flag is true
             - name: Login to ACR
               uses: docker/login-action@v3
               with:
                 registry: ${{ secrets.ACR_LOGIN_SERVER }}
                 username: ${{ secrets.ACR_USERNAME }}
                 password: ${{ secrets.ACR_PASSWORD }}
-            
-            - name: Build & Push image
+
+            - name: Build image
               run: |
-                VERSION_TAG="${{ needs.versionning.outputs.version }}-${{ needs.versionning.outputs.sha }}"
-                IMAGE="${{ secrets.ACR_LOGIN_SERVER }}/${{ inputs.service_name }}:$VERSION_TAG"
                 docker build -t $IMAGE ${{ inputs.service_path }}
+                docker push $IMAGE
+
+            -  name: Push image
+               if: ${{ inputs.push_to_registry == true }}
+               run: |
                 docker push $IMAGE

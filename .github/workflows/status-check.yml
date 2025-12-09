@@ -1,0 +1,23 @@
+name: Pull Request status check
+
+on:
+    pull_request:
+        branches:
+          - main
+          - develop
+          - 'release/**'
+    workflow_dispatch:   # allows manual for testing
+
+jobs:
+    check-build:
+        name: check docker build
+        uses: ./.github/workflows/ci-template.yml
+        with:
+            service_name: weather-forecast-frontend
+            service_path: src/weather-forecast-frontend
+            gitversion_config_path: src/weather-forecast-frontend/GitVersion.yml
+            push_to_registry: false
+        secrets:
+            ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+            ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+            ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}

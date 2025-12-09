@@ -1,13 +1,18 @@
 name: Build & Push Weather Forecast API to Docker Registry
 
+# on:
+#     push:
+#         branches: [ "main" ]
+#         paths:
+#           - "src/weather-forecast-api/**"
+#     pull_request:
+#         paths:
+#           - "src/weather-forecast-api/**"
+
 on:
     push:
-        branches: [ "main" ]
-        paths:
-          - "src/weather-forecast-api/**"
-    pull_request:
-        paths:
-          - "src/weather-forecast-api/**"
+        branches:
+          - main
 
 jobs:
   backend-dockerBuildAndPush:

@@ -1,12 +1,17 @@
 name: Build & Push Frontend Image to ACR
 
+# on:
+#     push:
+#         paths:
+#           - "src/weather-forecast-frontend/**"
+#     pull_request:
+#         paths:
+#           - "src/weather-forecast-frontend/**"
+
 on:
     push:
-        paths:
-          - "src/weather-forecast-frontend/**"
-    pull_request:
-        paths:
-          - "src/weather-forecast-frontend/**"
+        branches:
+          - main
 
 jobs:
     frontend-dockerBuildAndPush:

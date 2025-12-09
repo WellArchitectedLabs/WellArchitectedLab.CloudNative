@@ -1,4 +1,4 @@
-# Trainings.Kubernetes
+# WellArchitectedLab.CloudNative
 
 A comprehensive training repository demonstrating front-to-back application deployment on Azure Kubernetes Service (AKS) infrastructure.
 

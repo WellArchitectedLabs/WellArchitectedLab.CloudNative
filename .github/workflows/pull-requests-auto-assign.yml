@@ -4,12 +4,13 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+    pull-requests: write
+    issues: write
+
 jobs:
   Assign-Reviewers:
     runs-on: ubuntu-latest
-    permissions:
-        pull-requests: write
-        issues: write
     steps:
       - name: Assign teams
         uses: actions/github-script@v7
@@ -72,4 +73,4 @@ jobs:
             });
             
             console.log("✅ Team assignment completed successfully.");
-            
+

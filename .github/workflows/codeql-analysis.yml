@@ -37,7 +37,7 @@ jobs:
             
             - name: Build Backend Solution
               run: |
-                dotnet build .src/weather-forecast-api/WeatherForecast.sln
+                dotnet build src/weather-forecast-api/WeatherForecast.sln
             
             - name: Perform Code AnalysiS
               uses: github/codeql-action/analyze@v3

@@ -30,7 +30,6 @@ jobs:
             sha: ${{ steps.sha.outputs.short }}
         
         steps:
-
            - name: Checkout repository
              uses: actions/checkout@v4
              with:

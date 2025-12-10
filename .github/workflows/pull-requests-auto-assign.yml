@@ -1,0 +1,76 @@
+name: Auto Assign Teams
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions:
+    pull-requests: write
+    issues: write
+
+jobs:
+  Assign-Reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign teams
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = await github.paginate(
+              github.rest.pulls.listFiles, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                per_page: 100
+              }
+            );
+
+            const teams = []
+
+            // ------------------------------
+            // ✅ I - Wf-team auto-assignment
+            // ------------------------------
+
+
+            const wfTouched = files.some(file =>
+              file.filename.startsWith("src/weather-forecast-api/") ||
+              file.filename.startsWith("src/weather-forecast-frontend/")
+            );
+
+            if (!wfTouched) {
+              console.log("No Weather Forecast changes detected — skipping assignment.");
+            }
+            else {
+                teams.push("wf-dev-team");
+            }
+
+            // --------------------------------------
+            // ✅ II - Wf-devops team auto-assignment
+            // --------------------------------------
+
+            const devOpsTouched = files.some(file =>
+              file.filename.startsWith("k8s") ||
+              file.filename.startsWith("iac") ||
+              file.filename.startsWith(".github")
+            );
+
+            if (!devOpsTouched) {
+              console.log("No Weather Forecast changes detected — skipping assignment.");
+            }
+            else {
+                teams.push("devops-team");
+            }
+
+            // ---------------------------
+            // Committing all reviewers
+            // ---------------------------
+
+            await github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              team_reviewers: teams
+            });
+            
+            console.log("✅ Team assignment completed successfully.");
+

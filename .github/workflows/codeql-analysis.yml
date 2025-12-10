@@ -1,0 +1,42 @@
+name: CodeQL Analysis - WeatherForecastAPI
+
+on:
+    push:
+        branches:
+          - main
+          - develop
+        paths:
+          - .src/weatehr-forecast-api/**
+    pull_request:
+        branches:
+          - main
+          - develop
+        paths:
+          - .src/weatehr-forecast-api/**
+
+jobs:
+    codeQLAnalysis-backend:
+        name: CodeQL Backend Analysis
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            contents: read
+            security-events: write
+        strategy:
+            matrix:
+                language: ['csharp']
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v4
+            
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@v3
+              with:
+                languages: ${{ matrix.language }}
+            
+            - name: Build Backend Solution
+              run: |
+                dotnet build .src/weather-forecast-api/WeatherForecast.sln
+            
+            - name: Perform Code AnalysiS
+              uses: github/codeql-action/analyze@v3

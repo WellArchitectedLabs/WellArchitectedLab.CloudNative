@@ -5,12 +5,14 @@ on:
     types: [opened, reopened, synchronize]
 
 permissions:
-    pull-requests: write
-    issues: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  Assign-Reviewers:
+  assign-reviewers:
+    name: Auto Assign Teams Check   # ✅ Status check name
     runs-on: ubuntu-latest
+
     steps:
       - name: Assign teams
         uses: actions/github-script@v7
@@ -27,40 +29,20 @@ jobs:
 
             const teams = [];
 
-            // ------------------------------
-            // ✅ I - Wf-team auto-assignment
-            // ------------------------------
-
+            // I - Wf-team auto-assignment
             const wfTouched = files.some(file =>
               file.filename.startsWith("src/weather-forecast-api/") ||
               file.filename.startsWith("src/weather-forecast-frontend/")
             );
+            if (wfTouched) teams.push("wf-dev-team");
 
-            if (wfTouched) {
-              teams.push("wf-dev-team");
-            } else {
-              console.log("No Weather Forecast changes detected — skipping wf-dev-team assignment.");
-            }
-
-            // --------------------------------------
-            // ✅ II - Wf-devops team auto-assignment
-            // --------------------------------------
-
+            // II - Wf-devops team auto-assignment
             const devOpsTouched = files.some(file =>
               file.filename.startsWith("k8s") ||
               file.filename.startsWith("iac") ||
               file.filename.startsWith(".github")
             );
-
-            if (devOpsTouched) {
-              teams.push("devops-team");
-            } else {
-              console.log("No DevOps changes detected — skipping devops-team assignment.");
-            }
-
-            // ---------------------------
-            // Committing all reviewers
-            // ---------------------------
+            if (devOpsTouched) teams.push("devops-team");
 
             // Deduplicate team slugs
             const uniqueTeams = [...new Set(teams)];
@@ -69,7 +51,6 @@ jobs:
 
             for (const slug of uniqueTeams) {
               try {
-                // Validate team exists in the org
                 await github.request('GET /orgs/{org}/teams/{team_slug}', {
                   org,
                   team_slug: slug
@@ -84,7 +65,7 @@ jobs:
               }
             }
 
-            if (validTeams.length === 0) {
+             if (validTeams.length === 0) {
               console.log("No valid team reviewers found — skipping team request.");
             } else {
               try {
@@ -101,3 +82,6 @@ jobs:
                 throw err;
               }
             }
+
+      - name: Mark workflow as successful
+        run: echo "✅ Auto Assign Teams complete"

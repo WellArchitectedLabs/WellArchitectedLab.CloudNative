@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using WeatherForecast.Api.Dtos.WeatherForecast.Get;
 using WeatherForecast.Api.Extensions;
 using WeatherForecast.Application.Services.Interfaces;
-using WeatherForecast.Domain.Ports.Adapters.Database;
 
 namespace WeatherForecast.Api.Controllers;
 

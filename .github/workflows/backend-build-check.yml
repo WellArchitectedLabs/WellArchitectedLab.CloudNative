@@ -56,6 +56,9 @@ jobs:
           with:
             name: backend-test-results
             path: src/weather-forecast-api/TestResults
+            
+        - name: List coverage files
+          run: ls -R src/weather-forecast-api/TestResults/Coverage
         
         - name: Upload coverage to Codecov
           uses: codecov/codecov-action@v5

@@ -27,7 +27,7 @@ jobs:
     # Run unit tests
   run-UnitTests:
       runs-on: ubuntu-latest
-      name: Run Unit Tests
+      name: Backend Status Check - Run Unit Tests
       steps:
         - name: Checkout repo
           uses: actions/checkout@v4

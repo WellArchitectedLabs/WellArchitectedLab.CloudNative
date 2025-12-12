@@ -82,9 +82,9 @@ flowchart TB
 
     AKS --> Deploy1
     Deploy1 -->|Creates| Pods
-    Pods --> SVC
-    SVC --> HTTPRoute
-    HTTPRoute --> Gateway
+    SVC --> Pods
+    HTTPRoute --> SVC
+    Gateway --> HTTPRoute
 
     %% Image flow
     ACR -->|Pulls Images| Deploy1

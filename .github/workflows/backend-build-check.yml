@@ -40,32 +40,37 @@ jobs:
           run: |
             dotnet restore src/weather-forecast-api/Tests/WeatherForecast.Tests.csproj
           
-        - name: Run unit tests
+        - name: Ensure TestResults folder exists
+          working-directory: src/weather-forecast-api/Tests
+          run: mkdir -p TestResults/Coverage
+
+        - name: Run Backend Unit Tests With Coverage
           working-directory: src/weather-forecast-api/Tests
           run: |
-                 dotnet test \
-                    --configuration Release \
-                    --logger "trx;LogFileName=backend-tests.trx" \
-                    --collect:"XPlat Code Coverage" \
-                    /p:CollectCoverage=true \
-                    /p:CoverletOutputFormat=cobertura \
-                    /p:CoverletOutput=TestResults/Coverage/
+            dotnet test \
+            --configuration Release \
+            --logger "trx;LogFileName=backend-tests.trx" \
+            --collect:"XPlat Code Coverage" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=cobertura \
+            /p:CoverletOutput=TestResults/Coverage/
 
-        - name: Upload backend test results
+        - name: List coverage files for debugging
+          run: ls -R src/weather-forecast-api/Tests/TestResults
+
+        - name: Upload Backend Test Results
           uses: actions/upload-artifact@v4
           with:
             name: backend-test-results
             path: src/weather-forecast-api/Tests/TestResults
 
-        - name: List coverage files
-          run: ls -R src/weather-forecast-api/Tests/TestResults/Coverage
-        
         - name: Upload coverage to Codecov
           uses: codecov/codecov-action@v5
           with:
-            directory: src/weather-forecast-api/TestResults
+            directory: src/weather-forecast-api/Tests/TestResults/Coverage
             fail_ci_if_error: true
-            files: ./Coverage/coverage.cobertura.xml
-            flags: weather-forecast-api
-            name: codecov-weather-forecast-api
+            files: coverage.cobertura.xml
+            flags: backend
+            name: codecov-backend
+            token: ${{ secrets.CODECOV_TOKEN }}
             verbose: true

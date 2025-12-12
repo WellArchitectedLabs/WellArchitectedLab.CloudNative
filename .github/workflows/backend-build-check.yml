@@ -55,10 +55,10 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: backend-test-results
-            path: src/weather-forecast-api/TestResults
-            
+            path: src/weather-forecast-api/Tests/TestResults
+
         - name: List coverage files
-          run: ls -R src/weather-forecast-api/TestResults/Coverage
+          run: ls -R src/weather-forecast-api/Tests/TestResults/Coverage
         
         - name: Upload coverage to Codecov
           uses: codecov/codecov-action@v5

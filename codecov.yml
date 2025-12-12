@@ -1,29 +1,22 @@
 coverage:
   status:
-    #default rules for all following defined projects
-    default_rules:
-      flag_coverage_not_uploaded_behavior: exclude # don't send status checks that don't have flag 
     project:
       weather-forecast-api:
         paths:
           - src/weather-forecast-api/**
+        flag_coverage_not_uploaded_behavior: exclude # don't send status checks that don't have flag 
         # do not tolerate any drift compared to the set coverage target below
         threshold: "0%"
         # coverage target
         target: 80%
         flags:
           - backend
-          - csharp
         if_ci_failed: error
         informational: false
         only_pulls: false
-        ignore:
-          # We don't cover startup files and related startup extensions to prevent overkill coverage
-          - "**/Program.cs"
-          - "**/ServiceCollectionExtensions.cs"
-          - "**/WebApplicationBuilderExtensions.cs"
-          - "**/WebApplicationExtensions.cs"
+
       weather-forecast-frontend:
+        flag_coverage_not_uploaded_behavior: exclude
         paths:
           - src/weather-forecast-frontend/**
         # do not tolerate any drift compared to the set coverage target below
@@ -33,11 +26,16 @@ coverage:
         # flags permit to group coverage by certain common criterais
         flags: 
           - frontend
-          - typescript
         # status check should report error when status check is failed
         if_ci_failed: error
         # status check is not informational
         informational: false
         # status check will not only be ran on pull requests
         only_pulls: false
-          
+
+ignore:
+  # We don't cover startup files and related startup extensions to prevent overkill coverage
+  - "**/Program.cs"
+  - "**/ServiceCollectionExtensions.cs"
+  - "**/WebApplicationBuilderExtensions.cs"
+  - "**/WebApplicationExtensions.cs"

@@ -69,5 +69,6 @@ jobs:
           with:
             directory: src/weather-forecast-api/Tests/TestResults
             files: coverage.cobertura.xml
+            flags: backend
             token: ${{ secrets.CODECOV_TOKEN }}
             verbose: true

@@ -38,8 +38,8 @@ export default function App() {
       setForecasts(data);
 
     } catch (err) {
-      console.error("Full error details:", err);
-      console.error("Failed to fetch forecast:", err.message);
+      console.error("Full error details: ", err);
+      console.error("Failed to fetch forecast: ", err.message);
     }
   };
 

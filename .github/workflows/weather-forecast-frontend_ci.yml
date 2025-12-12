@@ -12,7 +12,7 @@ on:
 
 jobs:
     Frontend-BuildAndPush:
-        uses: ./.github/workflows/ci-template.yml
+        uses: ./.github/workflows/template_ci.yml
         with:
             service_name: weather-forecast-frontend
             service_path: src/weather-forecast-frontend

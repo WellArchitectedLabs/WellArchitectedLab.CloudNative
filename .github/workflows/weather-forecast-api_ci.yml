@@ -12,9 +12,10 @@ on:
 
 jobs:
 
-    # Try to package docker image
+    # Package and push weather forecast backend image
     Backend-buildAndPush:
-        uses: ./.github/workflows/ci-template.yml
+        uses: ./.github/workflows/template_ci.yml
+        name: Package and push image to ACR
         with:
             service_name: weather-forecast-api
             service_path: src/weather-forecast-api
@@ -23,4 +24,11 @@ jobs:
             ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
             ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
             ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+    
+    # coverage check
+    run-UnitTests:
+      uses: ./.github/workflows/template_codecov-dotnet.yml
+      name: Run Unit Tests & Calculate coverage
+      with:
+        test_project_folder: src/weather-forecast-api/Tests
             

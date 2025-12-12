@@ -1,0 +1,53 @@
+name: Backend Coverage Runner for Dotnet Applications
+
+on:
+  workflow_call:
+    inputs:
+      test_project_folder:
+        type: string
+        required: true
+
+jobs:
+    calculate-coverage:
+      name: Backend Status Check - Run Unit Tests
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v4
+          with:
+          # shallow copy for performance
+            fetch-depth: 1
+
+        - name: Restore Backend dependencies
+          run: |
+            dotnet restore ${{ inputs.test_project_folder }}
+          
+        - name: Ensure TestResults folder exists
+          working-directory: ${{ inputs.test_project_folder }}
+          run: mkdir -p TestResults/Coverage
+
+        - name: Run Backend Unit Tests With Coverage
+          working-directory: ${{ inputs.test_project_folder }}
+          run: |
+            dotnet test \
+            --configuration Release \
+            --logger "trx;LogFileName=backend-tests.trx" \
+            --collect:"XPlat Code Coverage" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=cobertura \
+            /p:CoverletOutput=TestResults/Coverage/
+
+        - name: Upload Backend Test Results
+          uses: actions/upload-artifact@v4
+          with:
+            name: backend-test-results
+            path: ${{ inputs.test_project_folder }}/TestResults
+
+        - name: Upload coverage to Codecov
+          uses: codecov/codecov-action@v5
+          with:
+            directory: ${{ inputs.test_project_folder }}/TestResults
+            files: coverage.cobertura.xml
+            flags: backend
+            token: ${{ secrets.CODECOV_TOKEN }}
+            verbose: true

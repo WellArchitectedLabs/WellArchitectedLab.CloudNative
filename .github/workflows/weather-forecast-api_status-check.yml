@@ -1,0 +1,35 @@
+name: Status Check - Backend Pull Request Build
+
+on:
+    pull_request:
+        branches:
+          - develop
+          - main
+          - 'release/**'
+        paths:
+          - src/weather-forecast-api/**
+    workflow_dispatch:  # allows manual testing
+
+jobs:
+
+  # build check
+  backend-buildCheck:
+    uses: ./.github/workflows/template_ci.yml
+    name: Backend Status Check - Try package docker image
+    with:
+        service_name: weather-forecast-api
+        gitversion_config_path: src/weather-forecast-api/GitVersion.yml
+        #status check doesn't push into ACR
+        push_to_registry: false
+        service_path: src/weather-forecast-api
+    secrets:
+        ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+        ACR_PASSWORD : ${{ secrets.ACR_PASSWORD }}
+        ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+        
+  # coverage check
+  run-UnitTests:
+      uses: ./.github/workflows/template_codecov-dotnet.yml
+      name: Backend Status Check - Tests & Coverage
+      with:
+        test_project_folder: src/weather-forecast-api/Tests

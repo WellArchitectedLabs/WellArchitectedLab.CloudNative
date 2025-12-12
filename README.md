@@ -89,15 +89,17 @@ Resusable workflows in github actions context. We chose the template naming whic
 ### CodeCov integration
 
 The implemented platform integrates with CodeCov: https://about.codecov.io/.
-CodeCov is a free code coverage tool for public github repositories ans has paied enterprise versions.
-This mono repo is integrated into CodeCov using the codecov.yml file, placed under repository's root.
-Two codeCov configurations are added:
+CodeCov is a free code coverage tool for public github repositories.
+This mono repo integrates with CodeCov using the codecov.yml file, placed under repository's root.
+Two codeCov configurations are added in this file:
 - A weather forecast api config: tracks coverage of weather forecast API. As an example, we have set the coverage target to 80%.
 - A weather forecast frontend config:  tracks coverage of weather forecast frontend. We have set the coverage target to 80%.
 
 As we add a new microservice into the MonoRepo, a new config should be added in this same file which should be present for correct CodeCov configuration.
 
 <img width="1581" height="503" alt="image" src="https://github.com/user-attachments/assets/fa55f18f-c9cc-4800-8410-739437ea69ad" />
+
+CodeCov integrates well with Github and may present a good alternative to SonarCloud/Qube, using its paid enterprise license.
 
 ---
 

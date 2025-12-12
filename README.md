@@ -78,7 +78,7 @@ flowchart TB
     %% =========================
     %% GitOps
     %% =========================
-    GitRepo["Git Repo\nk8s Manifests"]:::gitops
+    GitRepo["Repo k8s folder"]:::gitops
     Argo["ArgoCD"]:::gitops
     Argo -->|Detect Changes| GitRepo
 

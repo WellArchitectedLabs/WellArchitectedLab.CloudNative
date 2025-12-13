@@ -162,6 +162,35 @@ Status check workflow files are prefixed by pull-request:
 - `pull-request_weather-forecast-api-status-check.yml`: Runs a dry-run for weather forecast backend API CI workflow are is later launched on develop / main pushes.
 - `pull-request_weather-forecast-frontend-status-check.yml`: Runs a dry-run for weather forecast frontend CI workflow are is later launched on develop / main pushes.
 
+*All these pipeliens are triggered by pull requests that target develop and main branch.*
+
+> Note: This repository is only for demonstration purposes. When implementing a devops process, we generally chose the processes that fits more with the desired delivery caracteristics. Typically, if you search for more of a "rapid" or "flexible" devops process, or > if your runner processes are rare, implementing all these checks may be overkill.
+
+### Contrinous Integration workflows:
+- `weather-forecast-api_ci.yml`: Packages and pushes weather forecast API image into ACR registry. Calls wf api docker file.
+- `weather-forecast-frontend_ci.yml`: Runs a CI for weather forecast frontend on develop / main push. Calls wf frontend docker file.
+  
+*Both CI pipelines use GitVersion in order to correctly version the pushed images. A GitVersion.yml file is added under every microservice folder.*
+
+### Reusable workflows:
+Resusable workflows in github actions context. We chose the template naming which is short and more concise.
+
+- `template_ci.yml`: Used by both frontend and backend ci pipelines. Both CIs are streamlined in this file. This is supposed to be the same for any service added in the mono repo.
+- `template_codecov-dotnet.yml`: Runs unit tests and publishes results to CodeCov. Pelase refer to CodeCov section for more information concerning the repo's code coverage policy.
+  
+### CodeCov integration
+
+The implemented platform integrates with CodeCov: https://about.codecov.io/. CodeCov is a free code coverage tool for public github repositories. This mono repo integrates with CodeCov using the codecov.yml file, placed under repository's root. Two codeCov configurations are added in this file:
+
+- A weather forecast api config: tracks coverage of weather forecast API. As an example, we have set the coverage target to 80%.
+- A weather forecast frontend config: tracks coverage of weather forecast frontend. We have set the coverage target to 80%.
+  
+*As we add a new microservice into the MonoRepo, a new config should be added in this same file which should be present for correct CodeCov configuration.*
+
+<img width="1557" height="523" alt="image" src="https://github.com/user-attachments/assets/07a09da5-87a8-47eb-83b7-70c3f144301a" />
+
+*CodeCov integrates well with Github and may present a good alternative to SonarCloud/Qube, using its paid enterprise license.*
+
 ---
 
 ## `iac/` — Infrastructure as Code
@@ -169,8 +198,9 @@ Status check workflow files are prefixed by pull-request:
 **Purpose:** this folder holds the IaC templates and automation used to provision the Azure resources required by the platform (AKS cluster, Azure Container Registry, networking, RBAC roles, and other platform-level resources).
 
 **What to expect in this folder:**
-- The root README and repository overview mention `iac/` holds Terraform / ARM templates for AKS provisioning, network, security and RBAC setup, plus Azure resource definitions. These templates are the source of truth for creating the CI/CD environment and the ACR used by the cluster. 
 - The repo`s approach favors automated provisioning so the cluster and registry can be created from source-controlled files, enabling reproducible lab environments.
+- Folder holds Terraform HCL scripts for AKS provisioning, network, security and RBAC setup, plus Azure resource definitions. These templates are the source of truth for creating the dployment environments.
+- Standardized enterprise grade repository that bases on terraform modules in order to securely create multi-environment resources.
 
 **How to use:**
 1. Install prerequisites (terraform / az cli / azure credentials).
@@ -184,30 +214,41 @@ The repository uses (for demo) a permissive ACR access approach: the README docu
 
 ## `k8s/` — Kubernetes manifests & AKS deployment
 
-**Purpose:** store Kustomize overlays, Kubernetes manifests, Ingress/HTTP routes, services, deployments, and any cluster-level manifests (monitoring, logging, argocd application manifests).
+**Purpose:** store Kustomize overlays, Kubernetes manifests, Ingress/HTTP routes, services, deployments, and any cluster-level manifests (monitoring, logging and argocd application manifests).
 
 **What to expect in this folder:**
-- Deployments for backend and frontend components.
-- Service and Ingress resources to expose apps.
-- Kustomize overlays (e.g. `overlays/dev`) to wire up environment-specific values.
-- A `gitops` (or similarly named) subfolder containing Argo CD `Application` manifest(s) to sync the repo with the cluster.
 
+- Resilient and well-monitored deployments for backend and frontend components.
+- Service and Gateway Apis / Http Routes (Ex. Ingress) resources to expose apps.
+- Kustomize overlays (e.g. overlays/dev) to wire up environment-specific values.
+- A gitops subfolder containing Argo CD Application manifest(s) to sync the repo with the cluster. Deployments are automated via ArgoCD making ArgoCD the source of truth of environment syncing and the official tools for release management.
+- Kubernetes resources are mapped to different environments using kubernetes Kustomization files that are placed under folders as indicators of the applied resources as per requested environment.
+  
 **AKS setup notes:**
-- The README's Azure Container Registry attachment guidance is relevant here — attach ACR to AKS with `az aks update --attach-acr <acr>` to allow node pools to pull images. This instruction is placed in the repo README under the AKS notes and is reiterated in this `k8s` section because it is part of cluster setup. 
-- There are also Argo CD instructions (install Argo CD via Helm, then apply the `gitops` application manifest). See the repo README for the referenced gitops application manifest name. 
+
+- Attach ACR to AKS with az aks update --attach-acr <acr> to allow node pools to pull images. This instruction is placed in the repo README under the AKS notes and is reiterated in this k8s section because it is part of cluster setup.
+- There are also Argo CD instructions (install Argo CD via Helm, then apply the gitops application manifest). See the repo README for the referenced gitops application manifest name.
 
 ---
 
 ## `src/` — application source & local dev artifacts
 
-**Purpose:** host the microservices, frontend, API, shared libraries, tests and the `docker-compose` file to run the system locally.
+**Purpose:** stores microservices code (the weather forecat api and frontend code), shared libraries, tests and finaly the docker-compose.yml file to compose the system locally.
+
+**Compose file:** src/docker-compose.yml — this is the canonical local development composition that allows you to run the platform (or a reduced set of services) locally using Docker or Podman.
+
+**What to expect in this folder:**
+
+- A complete, yet simple, frontend to backend application, named weather forecast.
+- A demonstration of an hexagonal architecture.
 
 **Compose file:** `src/docker-compose.yml` — this is the canonical local development composition that allows you to run the platform (or a reduced set of services) locally using Docker or Podman.
 
 **Tech stack:**
-- Backend: **ASP.NET Core** (C#)
-- Unit testing: **NUnit**
-- Assertions & helpers: **Shouldly**, **AutoFixture**, **Moq**
+
+- Backend: ASP.NET Core (C#)
+- Unit testing: NUnit, Aufixture, *Moq, Shoudly
+- Database: Redis
 
 **Run locally (recommended short flow):**
 1. Install Docker (or Podman).
@@ -221,27 +262,30 @@ The repository uses (for demo) a permissive ACR access approach: the README docu
 Contains convenience scripts for developers and ops, e.g. PowerShell scripts to install helpful shell aliases.
 
 **Notable file:**
-- `setup/aliases/install-git-pr-alias.ps1` — a setup script that configures a `git pr` alias on Windows PowerShell (or Git Bash depending on usage). This alias is installed by the setup helper and simplifies creating and managing GitHub pull requests from the command line. Make sure developers run the install script during onboarding if they want the `git pr` convenience alias. 
+- `setup/aliases/install-git-pr-alias.ps1` — a setup script that configures a `git pr` alias on Windows PowerShell (or Git Bash depending on usage). This alias is installed by the setup helper and simplifies creating and managing GitHub pull requests from the command line.
+- The developed script is totally reusable in other contexts where streamlining pull request templates is a must.
 
 ---
 
 # Running solution locally (updated)
 
-**Canonical local start:** use the `docker-compose.yml` under `src/` (not the old `dotnet run` + `npm run` description that appears elsewhere). The compose file is the maintained local orchestration and will start the backend and frontend containers in a consistent way for development. See: `src/docker-compose.yml`: https://github.com/WellArchitectedLabs/WellArchitectedLab.MonoRepo/tree/develop/src/docker-compose.yml
+**Canonical local start:**  use the `docker-compose.yml` under `src/`. The compose file is the maintained local orchestration and will start the backend and frontend containers in a consistent way for development - See: src/docker-compose.yml: https://github.com/WellArchitectedLabs/WellArchitectedLab.MonoRepo/tree/develop/src/docker-compose.yml.
 
 ---
 
-# Developer & DevOps notes (CI, PRs, Git aliases)
+# Developer & DevOps notes (Utils & Git aliases)
 
-- All GitHub Actions workflows are in `/.github/workflows/` — review them to understand CI jobs, test runs, and publishing behavior. 
-- PR templates live in `/.github/PULL_REQUEST_TEMPLATE/` to standardize contribution information. 
-- The repo ships a setup script to configure a `git pr` alias for streamlined PR operations: `setup/aliases/install-git-pr-alias.ps1`. Run that when onboarding. 
+- All GitHub Actions workflows are in `/.github/workflows/` — review them to understand CI jobs, test runs, and publishing behavior.
+- PR templates live in `/.github/PULL_REQUEST_TEMPLATE/` to standardize contribution information.
+- The repo ships a setup script to configure a `git pr` alias for streamlined PR operations: `setup/aliases/install-git-pr-alias.ps1`.
 
 ---
 
 # Contributing
 
-Please follow these minimal rules:
+This repo intention is solely for demo purposes.
+If you would like to add a new stack that you judge as relevent for modern microservices, please go ahead and send your collaborations !
+Yet there are some rules to follow:
 1. Use feature branches (`feature/<short-desc>`).
 2. Run unit tests locally and ensure they pass.
 3. Update documentation and READMEs for changes that affect usage or setup.
@@ -251,6 +295,6 @@ Please follow these minimal rules:
 
 # License
 
-This project is provided for training/demonstration purposes.
+This project is provided for demonstration purposes.
 
 ---

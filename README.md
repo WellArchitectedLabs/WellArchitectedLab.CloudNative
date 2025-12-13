@@ -221,8 +221,8 @@ ACR was left public to avoid needing premium private endpoints. The recommended 
 
 - Resilient and well-monitored deployments for backend and frontend components.
 - Service and Gateway Apis / Http Routes (Ex. Ingress) resources to expose apps.
-- Kustomize overlays (e.g. overlays/dev) to wire up environment-specific values.
-- A gitops subfolder containing Argo CD Application manifest(s) to sync the repo with the cluster. Deployments are automated via ArgoCD making ArgoCD the source of truth of environment syncing and the official tools for release management.
+- Kustomize overlays (e.g. `overlays/dev`) to wire up environment-specific values.
+- A `gitops` subfolder containing Argo CD Application manifest(s) to sync the repo with the cluster. Deployments are automated via ArgoCD making ArgoCD the source of truth of environment syncing and the official tools for release management.
 - Kubernetes resources are mapped to different environments using kubernetes Kustomization files that are placed under folders as indicators of the applied resources as per requested environment.
   
 **AKS setup notes:**

@@ -52,6 +52,13 @@ spec:
           - name:  config
             mountPath: appsettings.json
             subPath: appsettings.json
+        command:
+          - /app/wait-for.sh
+        args:
+          - redis
+          - "6379"
+          - dotnet
+          - WeatherForecast.Api.dll
         ports: 
         - containerPort: 80
         imagePullPolicy: Always  # Always pull latest

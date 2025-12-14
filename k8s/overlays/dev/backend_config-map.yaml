@@ -4,17 +4,18 @@ metadata:
   name: backend-configmap
 data:
   appsettings.json: |
-    # json fieldPath:
+    {
     "Logging": {
       "LogLevel": {
         "Default": "Information",
         "Microsoft.AspNetCore": "Warning"
       }
     },
-    "AllowedHosts": "*"
-    "WeatherForecast":{
-      "Redis": {
-          "WriteDbConnection": "redis-primary.default.svc.cluster.local:6379"
-          "ReadDbConnection": "redis-secondary.default.svc.cluster.local:6379"
+    "AllowedHosts": "*",
+    "WeatherForecast": {
+        "Redis": {
+          "WriteDbConnection": "dev-redis-primary.default.svc.cluster.local:6379",
+          "ReadDbConnection": "dev-redis-secondary.default.svc.cluster.local:6379"
         }
+      }
     }

@@ -48,9 +48,10 @@ spec:
       - name: backend-webapp
         # test image from docker registry, provided by nginx project
         image: acrdevzlj7yj.azurecr.io/weather-forecast-api:latest
+        # mounting config file
         volumeMounts:
-          - name:  config
-            mountPath: /appsettings.json
+          - name: config
+            mountPath: /app/appsettings.json
             subPath: appsettings.json
         command:
           - /app/wait-for.sh

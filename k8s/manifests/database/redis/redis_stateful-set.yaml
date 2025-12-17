@@ -34,7 +34,7 @@ spec:
             if [ "$POD_NAME" = "dev-redis-0" ]; then
               exec redis-server --appendonly no --replicaof no one
             else
-              exec redis-server --appendonly yes --replicaof dev-redis-0.redis 6379
+              exec redis-server --appendonly yes --replicaof dev-redis-0 6379
             fi
   volumeClaimTemplates:
   - metadata:

@@ -12,4 +12,4 @@ namePrefix: dev-
 nameSuffix: ""
 
 configurations:
-  - ../kustomizeconfig.yaml
+  - kustomizeconfig.yaml

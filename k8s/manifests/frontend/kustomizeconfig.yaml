@@ -1,5 +1,4 @@
 nameReference:
-  # HTTPRoute → Gateway (already good)
   - kind: Gateway
     group: gateway.networking.k8s.io
     version: v1
@@ -8,8 +7,7 @@ nameReference:
         group: gateway.networking.k8s.io
         version: v1
         path: spec/parentRefs/name
-
-  # HTTPRoute → Service (THIS is the fix)
+        create: false
   - kind: Service
     group: ""
     version: v1
@@ -17,4 +15,5 @@ nameReference:
       - kind: HTTPRoute
         group: gateway.networking.k8s.io
         version: v1
-        path: spec/rules[]/backendRefs[]/name
+        path: spec/rules/backendRefs/name
+        create: false

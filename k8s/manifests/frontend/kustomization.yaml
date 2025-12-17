@@ -3,6 +3,15 @@ kind: Kustomization
 metadata:
   namespace: default
   name: frontend-kustomization
+  
+vars:
+  - name: FRONTEND_SERVICE
+    objref:
+      kind: Service
+      name: frontend-service
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
 
 resources:
   - frontend_deployment.yaml

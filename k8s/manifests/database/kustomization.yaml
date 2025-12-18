@@ -6,6 +6,6 @@ metadata:
 
 resources:
   - redis/redis_stateful-set.yaml
-  - redis/redis_write-service.yaml
-  - redis/redis_read-service.yaml
-  - redis/redis_headless-service.yaml
+  - redis/services/redis_write-service.yaml
+  - redis/services/redis_read-service.yaml
+  - redis/services/redis_headless-service.yaml

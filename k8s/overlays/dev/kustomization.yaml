@@ -23,6 +23,8 @@ configMapGenerator:
     literals:
       # used by redis in order to configure the replication mecanism
       - REDIS_HEADLESS_SERVICE=redis
+    options:
+      disableNameSuffixHash: true
 
 patches:
   - target:

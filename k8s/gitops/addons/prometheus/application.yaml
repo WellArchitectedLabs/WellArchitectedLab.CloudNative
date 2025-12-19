@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: dev-prometheus
   namespace: argocd
+  labels:
+    workload: operations
 spec:
   project: default
   source:

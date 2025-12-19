@@ -100,7 +100,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "npuser002" {
 resource "azurerm_kubernetes_cluster_node_pool" "npoperations001" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks-kubernetes-001.id
   name = "npops001"
-  node_taints = ["worload=operations:NoSchedule"]
+  node_taints = ["workload=operations:NoSchedule"]
   node_count = 1
   depends_on = [ azurerm_kubernetes_cluster.aks-kubernetes-001, azurerm_kubernetes_cluster_node_pool.npuser002 ]
   vm_size = "Standard_D2ds_v5"

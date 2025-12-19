@@ -1,19 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-kiali
+  name: prometheus
   namespace: argocd
   labels:
     workload: operations
 spec:
   project: default
   source:
-    repoURL: https://kiali.org/helm-charts
-    chart: kiali-server
-    targetRevision: 1.78.0
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 58.5.0
     helm:
       values: |
-        deployment:
+        prometheus:
+          prometheusSpec:
+            nodeSelector:
+              workload: operations
+            tolerations:
+              - key: "workload"
+                operator: "Equal"
+                value: "operations"
+                effect: "NoSchedule"
+
+        alertmanager:
           nodeSelector:
             workload: operations
           tolerations:
@@ -21,11 +31,12 @@ spec:
               operator: "Equal"
               value: "operations"
               effect: "NoSchedule"
-        auth:
-          strategy: anonymous
+
+        grafana:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
-    namespace: kiali
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true

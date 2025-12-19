@@ -57,7 +57,7 @@ spec:
         command:
           - /app/wait-for.sh
         args:
-          - dev-redis-secondary.default.svc.cluster.local
+          - dev-redis-secondary.backend.svc.cluster.local
           - "6379"
           - dotnet
           - WeatherForecast.Api.dll

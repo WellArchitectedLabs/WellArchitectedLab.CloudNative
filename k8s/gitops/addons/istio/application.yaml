@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istio
+  name: dev-istio
   namespace: argocd
 spec:
   project: default
@@ -35,7 +35,76 @@ spec:
             limits:
               cpu: 1000m
               memory: 1Gi
-
+        sidecarInjectorWebhook:
+          nodeSelector:
+            workload: operations
+          tolerations:
+            - key: "workload"
+              operator: "Equal"
+              value: "operations"
+              effect: "NoSchedule"
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: workload
+                        operator: In
+                        values:
+                          - operations
+        validationWebhook:
+          nodeSelector:
+            workload: operations
+          tolerations:
+            - key: "workload"
+              operator: "Equal"
+              value: "operations"
+              effect: "NoSchedule"
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: workload
+                        operator: In
+                        values:
+                          - operations
+        ingressGateway:
+          enabled: true
+          nodeSelector:
+            workload: operations
+          tolerations:
+            - key: "workload"
+              operator: "Equal"
+              value: "operations"
+              effect: "NoSchedule"
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: workload
+                        operator: In
+                        values:
+                          - operations
+        egressGateway:
+          enabled: true
+          nodeSelector:
+            workload: operations
+          tolerations:
+            - key: "workload"
+              operator: "Equal"
+              value: "operations"
+              effect: "NoSchedule"
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: workload
+                        operator: In
+                        values:
+                          - operations
 
   destination:
     server: https://kubernetes.default.svc

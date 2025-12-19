@@ -11,6 +11,25 @@ spec:
     targetRevision: 58.5.0
     helm:
       values: |
+        prometheus:
+          prometheusSpec:
+            nodeSelector:
+              workload: operations
+            tolerations:
+              - key: "workload"
+                operator: "Equal"
+                value: "operations"
+                effect: "NoSchedule"
+
+        alertmanager:
+          nodeSelector:
+            workload: operations
+          tolerations:
+            - key: "workload"
+              operator: "Equal"
+              value: "operations"
+              effect: "NoSchedule"
+
         grafana:
           enabled: false
   destination:

@@ -11,8 +11,13 @@ spec:
     targetRevision: 7.3.9
     helm:
       values: |
-        adminUser: admin
-        adminPassword: admin
+        nodeSelector:
+          workload: operations
+        tolerations:
+          - key: "workload"
+            operator: "Equal"
+            value: "operations"
+            effect: "NoSchedule"
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

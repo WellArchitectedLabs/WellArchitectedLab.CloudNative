@@ -5,6 +5,7 @@ metadata:
   name: backend-kustomization
 
 resources:
+  - namespace/backend_namespace.yaml
   - backend_deployment.yaml
   - auto-scaling/backend_hpa.yaml
   - auto-scaling/backend_pod-disruption-budget.yaml

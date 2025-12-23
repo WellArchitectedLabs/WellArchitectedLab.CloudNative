@@ -1,54 +1,64 @@
-pilot:
-  replicaCount: 1
-  resources:
-    requests:
-      cpu: 50m
-      memory: 256Mi
-    limits:
-      cpu: 200m
-      memory: 512Mi
-  nodeSelector:
-    workload: operations
-  tolerations:
-    - key: "workload"
-      operator: "Equal"
-      value: "operations"
-      effect: "NoSchedule"
+components:
+  pilot:
+    enabled: true
+    k8s:
+      nodeSelector:
+        workload: operations
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: operations
+          effect: NoSchedule
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
 
-sidecarInjectorWebhook:
-  nodeSelector:
-    workload: operations
-  tolerations:
-    - key: "workload"
-      operator: "Equal"
-      value: "operations"
-      effect: "NoSchedule"
+  sidecarInjectorWebhook:
+    enabled: true
+    k8s:
+      nodeSelector:
+        workload: operations
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: operations
+          effect: NoSchedule
 
-validationWebhook:
-  nodeSelector:
-    workload: operations
-  tolerations:
-    - key: "workload"
-      operator: "Equal"
-      value: "operations"
-      effect: "NoSchedule"
+  validationWebhook:
+    enabled: true
+    k8s:
+      nodeSelector:
+        workload: operations
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: operations
+          effect: NoSchedule
 
-ingressGateway:
-  enabled: true
-  nodeSelector:
-    workload: operations
-  tolerations:
-    - key: "workload"
-      operator: "Equal"
-      value: "operations"
-      effect: "NoSchedule"
+  ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        nodeSelector:
+          workload: operations
+        tolerations:
+          - key: workload
+            operator: Equal
+            value: operations
+            effect: NoSchedule
 
-egressGateway:
-  enabled: true
-  nodeSelector:
-    workload: operations
-  tolerations:
-    - key: "workload"
-      operator: "Equal"
-      value: "operations"
-      effect: "NoSchedule"
+  egressGateways:
+    - name: istio-egressgateway
+      enabled: true
+      k8s:
+        nodeSelector:
+          workload: operations
+        tolerations:
+          - key: workload
+            operator: Equal
+            value: operations
+            effect: NoSchedule

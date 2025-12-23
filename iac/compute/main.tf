@@ -86,7 +86,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "npuser001" {
   node_taints           = ["workload=backend:NoSchedule"]
   node_count            = 2
   depends_on            = [azurerm_kubernetes_cluster.aks-kubernetes-001]
-  vm_size               = "Standard_D4ds_v5"
+  vm_size               = "Standard_B2s"
 }
 resource "azurerm_kubernetes_cluster_node_pool" "npuser002" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks-kubernetes-001.id
@@ -94,7 +94,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "npuser002" {
   node_taints           = ["workload=frontend:NoSchedule"]
   node_count            = 2
   depends_on            = [azurerm_kubernetes_cluster.aks-kubernetes-001, azurerm_kubernetes_cluster_node_pool.npuser001]
-  vm_size               = "Standard_D4ds_v5"
+  vm_size               = "Standard_B2s"
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "npoperations001" {
@@ -103,7 +103,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "npoperations001" {
   node_taints = ["workload=operations:NoSchedule"]
   node_count = 1
   depends_on = [ azurerm_kubernetes_cluster.aks-kubernetes-001, azurerm_kubernetes_cluster_node_pool.npuser002 ]
-  vm_size = "Standard_D2ds_v5"
+  vm_size = "Standard_D4ds_v5"
   node_labels = {
     workload = "operations"
     istio    = "pilot"

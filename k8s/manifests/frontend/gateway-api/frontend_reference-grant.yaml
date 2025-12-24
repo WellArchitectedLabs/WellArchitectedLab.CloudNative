@@ -15,7 +15,7 @@ spec:
   from: 
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    namespace: istio-system
+    namespace: istio-gateway
   to:
   - group: ""
     kind: Service

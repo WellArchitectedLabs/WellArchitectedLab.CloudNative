@@ -15,7 +15,7 @@ spec:
   from: 
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    namespace: nginx-gateway
+    namespace: istio-system
   to:
   - group: ""
     kind: Service

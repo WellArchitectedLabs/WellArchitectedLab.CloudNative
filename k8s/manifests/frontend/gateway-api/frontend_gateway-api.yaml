@@ -2,9 +2,9 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: frontend-gateway
-  namespace: nginx-gateway
+  namespace: istio-gateway
 spec:
-  gatewayClassName: nginx
+  gatewayClassName: istio           # changed from nginx to istio
   listeners:
     - name: http
       protocol: HTTP

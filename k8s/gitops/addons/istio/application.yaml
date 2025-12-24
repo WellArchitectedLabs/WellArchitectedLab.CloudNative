@@ -3,16 +3,14 @@ kind: Application
 metadata:
   name: istio
   namespace: argocd
-  labels:
-    workload: operations
 spec:
   project: default
   source:
-    repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
-    targetRevision: 1.22.0
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: latest
     helm:
-      valueFiles: 
+      valueFiles:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
@@ -23,3 +21,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

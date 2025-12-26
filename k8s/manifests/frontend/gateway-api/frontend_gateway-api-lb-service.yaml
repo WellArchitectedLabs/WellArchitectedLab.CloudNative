@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-gateway-lb
+  namespace: istio-gateway
+  labels:
+    app: frontend
+    version: v1
+spec:
+  selector:
+    gateway.networking.k8s.io/gateway-name: dev-frontend-gateway
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  # This is the only way available for today
+  # With which we will be able to map load balancer to the very specific pods
+  # Which are the ones who run the operations workloads (tainted with workload=operations:NoSchedule)
+  # the local traffic policy, as opposed to the cluster policy, would configure the azure load balancer which is created implicitly by kube
+  # Please note that this service is nimplicitly created by gateway api. We have overriden the service yaml since there was no other way to cleanly inject the following "externalTrafficPolicy" value
+  externalTrafficPolicy: Local

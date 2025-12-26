@@ -13,6 +13,7 @@ resources:
   - gateway-api/backend_httproute.yaml
   - gateway-api/backend_reference-grant.yaml
   - gateway-api/backend_service.yaml
+  - gateway-api/backend_gateway-api-lb-service.yaml
 
 configurations:
   - kustomizeconfig.yaml

@@ -14,6 +14,7 @@ resources:
   - gateway-api/frontend_service.yaml
   - gateway-api/frontend_reference-grant.yaml
   - config/frontend_config-map.yaml
+  - gateway-api/frontend_gateway-api-lb-service.yaml
 
 configurations:
   - kustomizeconfig.yaml

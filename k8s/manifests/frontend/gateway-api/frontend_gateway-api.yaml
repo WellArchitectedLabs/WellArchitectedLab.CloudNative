@@ -6,6 +6,9 @@ metadata:
   labels:
     app: frontend
     version: v1
+  annotations:
+    # This tells Istio to create the service with externalTrafficPolicy: Local
+    service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz/ready
 spec:
   gatewayClassName: istio
   listeners:

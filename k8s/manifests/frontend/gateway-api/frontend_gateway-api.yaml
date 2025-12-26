@@ -6,12 +6,14 @@ metadata:
   labels:
     app: frontend
     version: v1
-  annotations:
-    # Istio-specific annotation to control the service spec
-    service.istio.io/externalTrafficPolicy: Local
 spec:
   gatewayClassName: istio
 
+  # Ensures that the cloud LoadBalancer only registers and health-checks
+  # nodes that actually run Istio Gateway pods.
+  # This prevents health probes and traffic from being sent to
+  # system or non-gateway nodes, which would otherwise result
+  # in probe failures and dropped traffic.
   infrastructure:
     annotations:
       service.istio.io/externalTrafficPolicy: Local
